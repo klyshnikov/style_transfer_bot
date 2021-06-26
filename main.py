@@ -1,8 +1,3 @@
-TOKEN = os.environ['TOKEN']  # Берем токен из переменной окружения, которую добавили ранее
-WEBHOOK_HOST = 'https://styletransfer-bot-my.herokuapp.com'  # Здесь указываем https://<название_приложения>.herokuapp.com
-WEBAPP_HOST = '0.0.0.0'  # Слушаем все подключения к нашему приложению
-WEBAPP_PORT = os.environ.get('PORT')  # тк в Procfile мы указали process_type web, heroku сгенерирует нам нужный порт, его достаточно взять из переменной окружения
-
 # ...........Imports..............
 import os
 import logging
@@ -23,6 +18,13 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 import json
 
 list_id = []
+
+TOKEN = os.environ['TOKEN']  # Берем токен из переменной окружения, которую добавили ранее
+WEBHOOK_HOST = 'https://styletransfer-bot-my.herokuapp.com'  # Здесь указываем https://<название_приложения>.herokuapp.com
+WEBAPP_HOST = '0.0.0.0'  # Слушаем все подключения к нашему приложению
+WEBAPP_PORT = os.environ.get('PORT')  # тк в Procfile мы указали process_type web, heroku сгенерирует нам нужный порт, его достаточно взять из переменной окружения
+WEBHOOK_PATH = '/webhook/'
+WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 # ................Vars................
 
 API_TOKEN = '1883714727:AAF55trIrs0bCLhI9Pio1l_c7OZ7rkz4P4U'
