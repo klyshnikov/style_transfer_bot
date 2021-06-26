@@ -4,3 +4,4 @@ PIL
 matplotlib
 torch
 torchvision
+numpy
