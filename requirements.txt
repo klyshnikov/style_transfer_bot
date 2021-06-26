@@ -1,4 +1,6 @@
 aiogram
 aiohttp
 PIL
-
+matplotlib
+torch
+torchvision
