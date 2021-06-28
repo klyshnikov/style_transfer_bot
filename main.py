@@ -19,12 +19,6 @@ import json
 
 list_id = []
 
-TOKEN = os.environ['TOKEN']
-WEBHOOK_HOST = 'https://styletransfer-bot-my.herokuapp.com'
-WEBAPP_HOST = '0.0.0.0'
-WEBAPP_PORT = os.environ.get('PORT')
-WEBHOOK_PATH = '/webhook/'
-WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 # ................Vars................
 
 API_TOKEN = '1883714727:AAF55trIrs0bCLhI9Pio1l_c7OZ7rkz4P4U'
