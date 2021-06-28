@@ -19,10 +19,10 @@ import json
 
 list_id = []
 
-TOKEN = os.environ['TOKEN']  # Берем токен из переменной окружения, которую добавили ранее
-WEBHOOK_HOST = 'https://styletransfer-bot-my.herokuapp.com'  # Здесь указываем https://<название_приложения>.herokuapp.com
-WEBAPP_HOST = '0.0.0.0'  # Слушаем все подключения к нашему приложению
-WEBAPP_PORT = os.environ.get('PORT')  # тк в Procfile мы указали process_type web, heroku сгенерирует нам нужный порт, его достаточно взять из переменной окружения
+TOKEN = os.environ['TOKEN']
+WEBHOOK_HOST = 'https://styletransfer-bot-my.herokuapp.com'
+WEBAPP_HOST = '0.0.0.0'
+WEBAPP_PORT = os.environ.get('PORT')
 WEBHOOK_PATH = '/webhook/'
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 # ................Vars................
@@ -311,7 +311,8 @@ async def show_example(message: types.Message):
 async def error_command(message: types.Message):
     if message.text[0] == '/':
         await message.reply("Такой команды нет. Используйте /help для того, чтобы увидеть все команды.")
-
+        
+#.............................main............................
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
