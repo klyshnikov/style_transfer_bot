@@ -1,3 +1,4 @@
+#...............Импорты................
 from __future__ import print_function
 
 import torch
@@ -19,16 +20,19 @@ import numpy as np
 
 
 def main_train(user_id):
+    #.............Чтение переменных.............
     with open('data_file.json', 'r') as j:
         json_data = json.load(j)
     closs_factor = int(json_data[user_id]["closs_factor"])
     sloss_factor = int(json_data[user_id]["sloss_factor"])
     num_steps = int(json_data[user_id]["num_epochs"])
     is_big = int(json_data[user_id]["is_big"])
+    
     imsize = int(json_data[user_id]["im_size"])
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+    
+    #............Чтение переменных..........
 
     loader = transforms.Compose([
         transforms.Resize(imsize),
@@ -43,17 +47,8 @@ def main_train(user_id):
     content_img = image_loader(user_id + "content_sqr.jpg")
 
     unloader = transforms.ToPILImage()
-
-    plt.ion()
-
-    def imshow(tensor, title=None):
-        image = tensor.cpu().clone()
-        image = image.squeeze(0)
-        image = unloader(image)
-        plt.imshow(image)
-        if title is not None:
-            plt.title(title)
-        plt.pause(0.001)
+    
+    #............Функции потери для контента...........
 
     class ContentLoss(nn.Module):
 
@@ -71,6 +66,8 @@ def main_train(user_id):
 
         G = torch.mm(features, features.t())
         return G.div(a * b * c * d)
+    
+    #.................Функция потери для стиля..................
 
     class StyleLoss(nn.Module):
 
@@ -87,6 +84,8 @@ def main_train(user_id):
 
     cnn_normalization_mean = torch.tensor([0.485, 0.456, 0.406]).to(device)
     cnn_normalization_std = torch.tensor([0.229, 0.224, 0.225]).to(device)
+    
+    #.................Нормализация............
 
     class Normalization(nn.Module):
         def __init__(self, mean, std):
@@ -99,6 +98,8 @@ def main_train(user_id):
 
     content_layers_default = ['conv_4']
     style_layers_default = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
+    
+    #....................Создание модели................
 
     def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
                                    style_img, content_img,
@@ -171,6 +172,8 @@ def main_train(user_id):
     def get_input_optimizer(input_img):
         optimizer = optim.LBFGS([input_img.requires_grad_()])
         return optimizer
+    
+    #..............Тренировка..........
 
     def run_style_transfer(cnn, normalization_mean, normalization_std,
                            content_img, style_img, input_img, num_steps=num_steps,
@@ -225,6 +228,8 @@ def main_train(user_id):
 
     output = run_style_transfer(cnn, cnn_normalization_mean, cnn_normalization_std,
                                 content_img, style_img, input_img)
+    
+    #.............Сохранение.............
 
     k = np.array(output[0].detach().numpy())
     k_reshape = np.einsum('kij->ijk', k)
