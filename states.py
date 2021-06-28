@@ -1,3 +1,4 @@
+#.............Машина состояний............
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
 
