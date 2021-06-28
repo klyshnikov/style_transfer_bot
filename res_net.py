@@ -1,3 +1,4 @@
+# ............Imports............
 from __future__ import print_function
 import torch
 import torch.nn as nn
@@ -13,6 +14,7 @@ import json
 import numpy as np
 
 def resnet_train(user_id):
+    #.............Читаем переменные...........
     with open('data_file.json', 'r') as j:
         json_data = json.load(j)
     closs_factor = int(json_data[user_id]["closs_factor"])
@@ -22,6 +24,8 @@ def resnet_train(user_id):
     imsize = int(json_data[user_id]["im_size"])
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    #.................Ставим функции для обрезки изображений..............
 
     loader = transforms.Compose([
         transforms.Resize(imsize),
@@ -35,6 +39,8 @@ def resnet_train(user_id):
     style_img = image_loader(user_id + "style_sqr.jpg")
     content_img = image_loader(user_id + "content_sqr.jpg")
     unloader = transforms.ToPILImage()
+    
+    #...............Функции потерь контента.............
 
     class ContentLoss(nn.Module):
         def __init__(self, target, ):
@@ -50,6 +56,8 @@ def resnet_train(user_id):
         features = input.view(a * b, c * d)
         G = torch.mm(features, features.t())
         return G.div(a * b * c * d)
+    
+    #...................Функция потери стиля...............
 
     class StyleLoss(nn.Module):
         def __init__(self, target_feature):
@@ -63,6 +71,8 @@ def resnet_train(user_id):
 
     cnn_normalization_mean = torch.tensor([0.485, 0.456, 0.406]).to(device)
     cnn_normalization_std = torch.tensor([0.229, 0.224, 0.225]).to(device)
+    
+    #....................Нормализация...................
 
     class Normalization(nn.Module):
         def __init__(self, mean, std):
@@ -72,6 +82,8 @@ def resnet_train(user_id):
 
         def forward(self, img):
             return (img - self.mean) / self.std
+        
+    #.................Функция сборки модели................
 
     def get_style_model_and_losses(normalization_mean, normalization_std,
                                    style_img, content_img):
@@ -150,6 +162,8 @@ def resnet_train(user_id):
     def get_input_optimizer(input_img):
         optimizer = optim.LBFGS([input_img.requires_grad_()])
         return optimizer
+    
+    #.......................Основная функция - тренировка..................
 
     def run_style_transfer(normalization_mean, normalization_std,
                            content_img, style_img, input_img, num_steps=num_steps,
@@ -203,6 +217,8 @@ def resnet_train(user_id):
 
     output = run_style_transfer(cnn_normalization_mean, cnn_normalization_std,
                                 content_img, style_img, input_img)
+    
+    #......................Кривое сохранение изображения.................
 
     k = np.array(output[0].detach().numpy())
     k_reshape = np.einsum('kij->ijk', k)
