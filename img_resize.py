@@ -1,3 +1,4 @@
+# Простая программа для обрезания изображений
 from PIL import Image
 import json
 
